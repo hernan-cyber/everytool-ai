@@ -270,6 +270,7 @@ async function loadTools() {
     }));
 
     renderCategories(grouped);
+    loadUserLikes();
 }
 
 function getFaviconUrl(url) {
@@ -328,19 +329,37 @@ async function trackClick(toolId) {
 // Toggle like
 async function toggleLike(toolId, btn) {
     if (!currentUser) { showAuthModal('login'); return; }
-    const { data: existing } = await sb.from('likes').select('id').eq('tool_id', toolId).eq('user_id', currentUser.id).single();
-    const countSpan = btn.querySelector('span');
-    let count = parseInt(countSpan.textContent) || 0;
+    const { data: existing, error: fetchErr } = await sb.from('likes').select('id').eq('tool_id', toolId).eq('user_id', currentUser.id).maybeSingle();
     if (existing) {
-        await sb.from('likes').delete().eq('id', existing.id);
-        btn.classList.remove('liked');
-        btn.innerHTML = '♡';
-        await sb.from('tools').update({ likes_count: Math.max(0, count - 1) }).eq('id', toolId);
+        const { error } = await sb.from('likes').delete().eq('id', existing.id);
+        if (!error) {
+            btn.classList.remove('liked');
+            btn.innerHTML = '♡';
+        }
     } else {
-        await sb.from('likes').insert({ tool_id: toolId, user_id: currentUser.id });
-        btn.classList.add('liked');
-        btn.innerHTML = '♥';
-        await sb.from('tools').update({ likes_count: count + 1 }).eq('id', toolId);
+        const { error } = await sb.from('likes').insert({ tool_id: toolId, user_id: currentUser.id });
+        if (!error) {
+            btn.classList.add('liked');
+            btn.innerHTML = '♥';
+        } else {
+            console.error('Like error:', error);
+        }
+    }
+}
+
+// Load user's likes and mark them
+async function loadUserLikes() {
+    if (!currentUser) return;
+    const { data } = await sb.from('likes').select('tool_id').eq('user_id', currentUser.id);
+    if (data) {
+        const likedIds = new Set(data.map(l => l.tool_id));
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            const toolId = btn.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+            if (toolId && likedIds.has(toolId)) {
+                btn.classList.add('liked');
+                btn.innerHTML = '♥';
+            }
+        });
     }
 }
 
