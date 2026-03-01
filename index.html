@@ -573,9 +573,6 @@ function renderCategories(categories, filter = '') {
         let toolsHtml = displayTools.map((t, i) => {
             const favicon = getFaviconUrl(t.url);
             let badges = '';
-            if (t.featured) badges += ' <span class="badge badge-ai">AI</span>';
-            if (i < 2 && ci % 5 === 0) badges += ' <span class="badge badge-new">NEW</span>';
-            if (t.featured && ci % 3 === 0) badges += ' 🔥';
             return `<li>
                 <span class="tool-num">${i + 1}.</span>
                 <img class="favicon" src="${favicon}" alt="" loading="lazy" onerror="this.style.display='none'">
