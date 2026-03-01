@@ -39,6 +39,8 @@ a:hover { text-decoration: underline; }
 .nav-btns { display: flex; gap: 6px; }
 .nav-btns a, .nav-btns button { display: inline-flex; align-items: center; gap: 4px; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
 .nav-btns a:hover, .nav-btns button:hover { background: var(--bg); text-decoration: none; }
+.header-link { color: var(--text-muted); font-size: 13px; font-weight: 500; text-decoration: none; padding: 6px 8px; border-radius: 6px; background: transparent; transition: color 0.2s; }
+.header-link:hover { color: var(--text); text-decoration: none; }
 .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 0 20px 20px; max-width: 1400px; margin: 0 auto; }
 .category-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; }
 .category-header { font-weight: 700; text-transform: uppercase; font-size: 14px; margin-bottom: 4px; color: var(--text); display: flex; align-items: center; gap: 6px; }
@@ -110,34 +112,35 @@ a:hover { text-decoration: underline; }
 </div>
 
 <div class="header">
-    <div class="search-row">
-        <div class="search-bar">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <div class="search-bar" style="flex:1;min-width:280px;">
             <span class="search-icon">🔍</span>
             <input type="text" id="mainSearch" placeholder="Search best 500+ AI tools..." oninput="filterTools(this.value)">
         </div>
-        <div class="nav-btns">
-            <a href="#about">ℹ️ About</a>
-            <a href="#faq">📝 Blog</a>
-            <a href="submit.html">📩 Submit Tool</a>
-            <button onclick="toggleTheme()">🌙</button>
-            <div class="auth-area" id="authArea" style="display:inline-flex;gap:6px;margin-left:4px;">
-                <button onclick="showAuthModal('login')">Log In</button>
-                <button class="primary" onclick="showAuthModal('signup')">Sign Up</button>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <a href="#about" class="header-link">About</a>
+            <a href="#faq" class="header-link">Blog</a>
+            <a href="submit.html" class="header-link">Submit</a>
+            <button onclick="toggleTheme()" class="header-link" style="border:none;cursor:pointer;">🌙</button>
+            <span style="width:1px;height:20px;background:var(--card-border);margin:0 4px;"></span>
+            <div class="auth-area" id="authArea" style="display:inline-flex;gap:6px;">
+                <button onclick="showAuthModal('login')" style="padding:6px 14px;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--text);font-size:13px;cursor:pointer;">Log In</button>
+                <button onclick="showAuthModal('signup')" style="padding:6px 14px;border-radius:6px;border:none;background:var(--accent-blue);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">Sign Up</button>
             </div>
         </div>
-    </div>
-    <div class="email-signup-area" style="margin-bottom:16px;">
-        <p>🔔 Wanna stay updated on AI tools? Sign up to our email list &amp; unlock exclusive updates.</p>
-        <form id="emailForm">
-            <input type="email" id="emailInput" placeholder="your@email.com" required>
-            <button type="submit">Subscribe</button>
-        </form>
     </div>
 </div>
 
 <div class="categories-grid" id="categoriesGrid"></div>
 
 <div class="mid-section">
+    <div style="text-align:center;padding:30px 20px;margin-bottom:20px;">
+        <p style="font-size:16px;color:var(--text);margin-bottom:12px;">🔔 Stay updated on the latest AI tools</p>
+        <form id="emailForm" style="display:inline-flex;gap:8px;max-width:450px;width:100%;">
+            <input type="email" id="emailInput" placeholder="your@email.com" required style="flex:1;padding:10px 14px;border:1px solid var(--card-border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:14px;">
+            <button type="submit" style="padding:10px 20px;background:var(--accent-blue);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;white-space:nowrap;">Subscribe</button>
+        </form>
+    </div>
     <div class="mid-search">
         <h2>🔍 Can't find what you need?</h2>
         <p>Search through our curated collection of 500+ AI tools</p>
