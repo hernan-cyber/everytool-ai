@@ -110,20 +110,6 @@ a:hover { text-decoration: underline; }
 </div>
 
 <div class="header">
-    <div class="header-top">
-        <div class="logo">EVERYTOOL<span>.AI</span></div>
-        <div class="email-signup-area">
-            <p>🔔 Wanna stay updated on AI tools? Sign up to our email list &amp; unlock exclusive updates.</p>
-            <form id="emailForm">
-                <input type="email" id="emailInput" placeholder="your@email.com" required>
-                <button type="submit">Subscribe</button>
-            </form>
-        </div>
-        <div class="auth-area" id="authArea">
-            <button onclick="showAuthModal('login')">Log In</button>
-            <button class="primary" onclick="showAuthModal('signup')">Sign Up</button>
-        </div>
-    </div>
     <div class="search-row">
         <div class="search-bar">
             <span class="search-icon">🔍</span>
@@ -134,7 +120,18 @@ a:hover { text-decoration: underline; }
             <a href="#faq">📝 Blog</a>
             <a href="submit.html">📩 Submit Tool</a>
             <button onclick="toggleTheme()">🌙</button>
+            <div class="auth-area" id="authArea" style="display:inline-flex;gap:6px;margin-left:4px;">
+                <button onclick="showAuthModal('login')">Log In</button>
+                <button class="primary" onclick="showAuthModal('signup')">Sign Up</button>
+            </div>
         </div>
+    </div>
+    <div class="email-signup-area" style="margin-bottom:16px;">
+        <p>🔔 Wanna stay updated on AI tools? Sign up to our email list &amp; unlock exclusive updates.</p>
+        <form id="emailForm">
+            <input type="email" id="emailInput" placeholder="your@email.com" required>
+            <button type="submit">Subscribe</button>
+        </form>
     </div>
 </div>
 
