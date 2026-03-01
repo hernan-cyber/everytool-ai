@@ -50,8 +50,10 @@ a:hover { text-decoration: underline; }
 .tool-list li img.favicon { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
 .tool-list li a { color: var(--text); text-decoration: none; font-weight: 500; }
 .tool-list li a:hover { text-decoration: underline; color: var(--accent-blue); }
-.like-btn { background: none; border: none; cursor: pointer; font-size: 14px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 2px; padding: 2px 4px; }
-.like-btn:hover, .like-btn.liked { color: #ef4444; }
+.like-btn { background: none; border: none; cursor: pointer; font-size: 14px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 2px; padding: 2px 4px; opacity: 0; transition: opacity 0.2s; }
+.tool-item:hover .like-btn { opacity: 1; }
+.like-btn.liked { opacity: 1; color: #ef4444; }
+.like-btn:hover { color: #ef4444; }
 .see-all-btn { display: block; width: 100%; padding: 8px; border-radius: 6px; text-align: center; font-weight: 600; color: var(--text-muted); margin-top: 12px; font-size: 12px; border: 1px solid var(--card-border); background: transparent; cursor: pointer; text-decoration: none !important; letter-spacing: 0.3px; transition: background 0.2s, color 0.2s; }
 .see-all-btn:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); text-decoration: none !important; }
 .btn-teal { border-color: #334155; color: #2dd4bf; }
@@ -296,11 +298,11 @@ function renderCategories(categories, filter = '') {
 
         let toolsHtml = displayTools.map((t, i) => {
             const favicon = getFaviconUrl(t.url);
-            return `<li>
+            return `<li class="tool-item">
                 <span class="tool-num">${i + 1}.</span>
                 <img class="favicon" src="${favicon}" alt="" loading="lazy" onerror="this.style.display='none'">
                 <a href="tool.html?slug=${t.slug}" onclick="trackClick('${t.id}')">${t.name}</a>
-                <button class="like-btn" onclick="event.preventDefault();toggleLike('${t.id}',this)" title="Like">♡ <span>${t.likes_count||0}</span></button>
+                <button class="like-btn" onclick="event.preventDefault();toggleLike('${t.id}',this)" title="Like">♡</button>
             </li>`;
         }).join('');
 
@@ -332,12 +334,12 @@ async function toggleLike(toolId, btn) {
     if (existing) {
         await sb.from('likes').delete().eq('id', existing.id);
         btn.classList.remove('liked');
-        btn.innerHTML = `♡ <span>${Math.max(0, count - 1)}</span>`;
+        btn.innerHTML = '♡';
         await sb.from('tools').update({ likes_count: Math.max(0, count - 1) }).eq('id', toolId);
     } else {
         await sb.from('likes').insert({ tool_id: toolId, user_id: currentUser.id });
         btn.classList.add('liked');
-        btn.innerHTML = `♥ <span>${count + 1}</span>`;
+        btn.innerHTML = '♥';
         await sb.from('tools').update({ likes_count: count + 1 }).eq('id', toolId);
     }
 }
