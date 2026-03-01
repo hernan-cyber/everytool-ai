@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit a Tool — EveryTool.ai</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --bg: #f5f5f0; --card-bg: #fff; --card-border: #e0e0e0; --text: #1a1a1a; --text-muted: #666; --accent-blue: #3b82f6; --banner-bg: #1e293b; }
+[data-theme="dark"] { --bg: #0f172a; --card-bg: #1e293b; --card-border: #334155; --text: #e2e8f0; --text-muted: #94a3b8; --banner-bg: #020617; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+a { color: var(--accent-blue); }
+.top-bar { background: var(--banner-bg); color: #fff; padding: 16px 20px; display: flex; align-items: center; gap: 16px; }
+.top-bar a { color: #fff; text-decoration: none; font-weight: 900; font-size: 24px; letter-spacing: -1px; }
+.top-bar a span { color: #93c5fd; }
+.container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
+.card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 32px; }
+h1 { font-size: 28px; margin-bottom: 8px; }
+.subtitle { color: var(--text-muted); margin-bottom: 24px; }
+label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; margin-top: 16px; }
+input, textarea, select { width: 100%; padding: 10px 12px; border: 1px solid var(--card-border); border-radius: 6px; font-size: 14px; background: var(--bg); color: var(--text); font-family: inherit; }
+textarea { min-height: 100px; resize: vertical; }
+.btn { display: inline-block; padding: 12px 24px; background: var(--accent-blue); color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 24px; width: 100%; }
+.btn:hover { opacity: 0.9; }
+.msg { padding: 12px; border-radius: 8px; margin-top: 16px; font-size: 14px; }
+.msg.success { background: #dcfce7; color: #166534; }
+.msg.error { background: #fee2e2; color: #991b1b; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="top-bar"><a href="index.html">EVERYTOOL<span>.AI</span></a></div>
+<div class="container">
+    <div class="card">
+        <h1>📩 Submit a Tool</h1>
+        <p class="subtitle">Know an AI tool we should list? Submit it and we'll review it within a week.</p>
+        <form id="submitForm">
+            <label>Tool Name *</label>
+            <input type="text" id="toolName" required placeholder="e.g. ChatGPT">
+            <label>URL *</label>
+            <input type="url" id="toolUrl" required placeholder="https://...">
+            <label>Description *</label>
+            <textarea id="toolDesc" required placeholder="What does this tool do?"></textarea>
+            <label>Category</label>
+            <select id="toolCat"><option value="">Select a category...</option></select>
+            <label>Your Email (optional)</label>
+            <input type="email" id="toolEmail" placeholder="We'll notify you when it's listed">
+            <button type="submit" class="btn">Submit Tool</button>
+        </form>
+        <div id="submitMsg" class="hidden"></div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const sb = supabase.createClient('https://ecqvyfsxaofboilnlkna.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjcXZ5ZnN4YW9mYm9pbG5sa25hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzODkxMzIsImV4cCI6MjA4Nzk2NTEzMn0.l0fd6T6z6rfZw_p1H6vsehEDCYCBBFfHCAOLobKJZVE');
+
+async function loadCategories() {
+    const { data } = await sb.from('categories').select('id,name,emoji').order('sort_order');
+    const sel = document.getElementById('toolCat');
+    (data||[]).forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = `${c.emoji} ${c.name}`; sel.appendChild(o); });
+}
+
+document.getElementById('submitForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('submitMsg');
+    const { data: { user } } = await sb.auth.getUser();
+    const payload = {
+        name: document.getElementById('toolName').value,
+        url: document.getElementById('toolUrl').value,
+        description: document.getElementById('toolDesc').value,
+        category_id: document.getElementById('toolCat').value || null,
+        submitted_email: document.getElementById('toolEmail').value || null,
+        submitted_by: user?.id || null
+    };
+    const { error } = await sb.from('submissions').insert(payload);
+    if (error) { msg.className = 'msg error'; msg.textContent = error.message; msg.classList.remove('hidden'); return; }
+    document.getElementById('submitForm').classList.add('hidden');
+    msg.className = 'msg success';
+    msg.innerHTML = '🎉 <strong>Thanks!</strong> We\'ll review your submission and add it to the directory if it meets our standards.';
+    msg.classList.remove('hidden');
+});
+
+loadCategories();
+</script>
+</body>
+</html>

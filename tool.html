@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tool — EveryTool.ai</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --bg: #f5f5f0; --card-bg: #fff; --card-border: #e0e0e0; --text: #1a1a1a; --text-muted: #666; --accent-blue: #3b82f6; --banner-bg: #1e293b; }
+[data-theme="dark"] { --bg: #0f172a; --card-bg: #1e293b; --card-border: #334155; --text: #e2e8f0; --text-muted: #94a3b8; --banner-bg: #020617; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+a { color: var(--accent-blue); }
+.top-bar { background: var(--banner-bg); color: #fff; padding: 16px 20px; display: flex; align-items: center; gap: 16px; }
+.top-bar a.logo { color: #fff; text-decoration: none; font-weight: 900; font-size: 24px; letter-spacing: -1px; }
+.top-bar a.logo span { color: #93c5fd; }
+.container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+.card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 32px; margin-bottom: 24px; }
+.tool-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+.tool-header img { width: 48px; height: 48px; border-radius: 8px; }
+.tool-header h1 { font-size: 28px; }
+.tool-meta { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+.tool-meta .tag { background: var(--bg); border: 1px solid var(--card-border); padding: 4px 12px; border-radius: 20px; font-size: 13px; }
+.tool-desc { font-size: 16px; color: var(--text-muted); margin-bottom: 20px; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text); }
+.btn.primary { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+.btn:hover { opacity: 0.85; }
+.btn.liked { color: #ef4444; }
+.comments-section h2 { font-size: 20px; margin-bottom: 16px; }
+.comment { border-bottom: 1px solid var(--card-border); padding: 12px 0; }
+.comment:last-child { border-bottom: none; }
+.comment .author { font-weight: 600; font-size: 13px; }
+.comment .date { color: var(--text-muted); font-size: 12px; }
+.comment .text { margin-top: 4px; font-size: 14px; }
+.comment-form { margin-top: 16px; }
+.comment-form textarea { width: 100%; padding: 10px; border: 1px solid var(--card-border); border-radius: 6px; font-size: 14px; min-height: 80px; background: var(--bg); color: var(--text); font-family: inherit; resize: vertical; }
+.comment-form button { margin-top: 8px; }
+.login-prompt { color: var(--text-muted); font-size: 14px; margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <a href="index.html" class="logo">EVERYTOOL<span>.AI</span></a>
+</div>
+<div class="container">
+    <div class="card" id="toolCard"><p>Loading...</p></div>
+    <div class="card comments-section" id="commentsSection">
+        <h2>💬 Comments</h2>
+        <div id="commentsList"></div>
+        <div id="commentForm"></div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const sb = supabase.createClient('https://ecqvyfsxaofboilnlkna.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjcXZ5ZnN4YW9mYm9pbG5sa25hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzODkxMzIsImV4cCI6MjA4Nzk2NTEzMn0.l0fd6T6z6rfZw_p1H6vsehEDCYCBBFfHCAOLobKJZVE');
+
+const slug = new URLSearchParams(location.search).get('slug');
+let tool = null, currentUser = null;
+
+async function init() {
+    const { data: { user } } = await sb.auth.getUser();
+    currentUser = user;
+
+    const { data } = await sb.from('tools').select('*, categories(name, emoji)').eq('slug', slug).single();
+    if (!data) { document.getElementById('toolCard').innerHTML = '<p>Tool not found.</p>'; return; }
+    tool = data;
+    document.title = `${tool.name} — EveryTool.ai`;
+
+    const favicon = `https://www.google.com/s2/favicons?domain=${new URL(tool.url).hostname}&sz=64`;
+    const catName = tool.categories ? `${tool.categories.emoji} ${tool.categories.name}` : '';
+
+    // Check user's like/fav status
+    let liked = false, faved = false;
+    if (currentUser) {
+        const [likeRes, favRes] = await Promise.all([
+            sb.from('likes').select('id').eq('tool_id', tool.id).eq('user_id', currentUser.id).single(),
+            sb.from('favorites').select('id').eq('tool_id', tool.id).eq('user_id', currentUser.id).single()
+        ]);
+        liked = !!likeRes.data;
+        faved = !!favRes.data;
+    }
+
+    document.getElementById('toolCard').innerHTML = `
+        <div class="tool-header">
+            <img src="${favicon}" alt="${tool.name}" onerror="this.style.display='none'">
+            <h1>${tool.name}</h1>
+        </div>
+        <div class="tool-meta">
+            ${catName ? `<span class="tag">${catName}</span>` : ''}
+            <span class="tag">♥ ${tool.likes_count||0} likes</span>
+            <span class="tag">👁 ${tool.clicks||0} clicks</span>
+        </div>
+        <p class="tool-desc">${tool.description||''}</p>
+        <div class="actions">
+            <a href="${tool.url}" target="_blank" class="btn primary" onclick="trackClick()">🔗 Visit ${tool.name}</a>
+            <button class="btn ${liked?'liked':''}" onclick="toggleLike(this)" id="likeBtn">${liked?'♥':'♡'} Like</button>
+            <button class="btn ${faved?'liked':''}" onclick="toggleFav(this)" id="favBtn">${faved?'⭐':'☆'} Favorite</button>
+        </div>
+    `;
+
+    loadComments();
+    renderCommentForm();
+}
+
+async function trackClick() {
+    if (tool) await sb.from('tools').update({ clicks: (tool.clicks||0)+1 }).eq('id', tool.id);
+}
+
+async function toggleLike(btn) {
+    if (!currentUser) { alert('Please log in to like tools'); return; }
+    const { data: ex } = await sb.from('likes').select('id').eq('tool_id', tool.id).eq('user_id', currentUser.id).single();
+    if (ex) {
+        await sb.from('likes').delete().eq('id', ex.id);
+        await sb.from('tools').update({ likes_count: Math.max(0,(tool.likes_count||0)-1) }).eq('id', tool.id);
+        tool.likes_count = Math.max(0,(tool.likes_count||0)-1);
+        btn.classList.remove('liked'); btn.innerHTML = '♡ Like';
+    } else {
+        await sb.from('likes').insert({ tool_id: tool.id, user_id: currentUser.id });
+        await sb.from('tools').update({ likes_count: (tool.likes_count||0)+1 }).eq('id', tool.id);
+        tool.likes_count = (tool.likes_count||0)+1;
+        btn.classList.add('liked'); btn.innerHTML = '♥ Like';
+    }
+}
+
+async function toggleFav(btn) {
+    if (!currentUser) { alert('Please log in to favorite tools'); return; }
+    const { data: ex } = await sb.from('favorites').select('id').eq('tool_id', tool.id).eq('user_id', currentUser.id).single();
+    if (ex) {
+        await sb.from('favorites').delete().eq('id', ex.id);
+        btn.classList.remove('liked'); btn.innerHTML = '☆ Favorite';
+    } else {
+        await sb.from('favorites').insert({ tool_id: tool.id, user_id: currentUser.id });
+        btn.classList.add('liked'); btn.innerHTML = '⭐ Favorite';
+    }
+}
+
+async function loadComments() {
+    const { data } = await sb.from('comments').select('*, profiles(display_name)').eq('tool_id', tool.id).order('created_at', { ascending: false });
+    const list = document.getElementById('commentsList');
+    if (!data || data.length === 0) { list.innerHTML = '<p style="color:var(--text-muted);font-size:14px">No comments yet. Be the first!</p>'; return; }
+    list.innerHTML = data.map(c => `
+        <div class="comment">
+            <span class="author">${c.profiles?.display_name||'Anonymous'}</span>
+            <span class="date">${new Date(c.created_at).toLocaleDateString()}</span>
+            <div class="text">${c.text}</div>
+        </div>
+    `).join('');
+}
+
+function renderCommentForm() {
+    const el = document.getElementById('commentForm');
+    if (!currentUser) { el.innerHTML = '<p class="login-prompt">Log in to leave a comment.</p>'; return; }
+    el.innerHTML = `
+        <div class="comment-form">
+            <textarea id="commentText" placeholder="Share your thoughts..."></textarea>
+            <button class="btn primary" onclick="postComment()">Post Comment</button>
+        </div>
+    `;
+}
+
+async function postComment() {
+    const text = document.getElementById('commentText').value.trim();
+    if (!text) return;
+    await sb.from('comments').insert({ tool_id: tool.id, user_id: currentUser.id, text });
+    document.getElementById('commentText').value = '';
+    loadComments();
+}
+
+init();
+</script>
+</body>
+</html>

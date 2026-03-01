@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — EveryTool.ai</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --bg: #0f172a; --card-bg: #1e293b; --card-border: #334155; --text: #e2e8f0; --text-muted: #94a3b8; --accent: #3b82f6; --danger: #ef4444; --success: #22c55e; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+a { color: var(--accent); }
+
+/* Login */
+.login-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+.login-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 40px; width: 400px; max-width: 90vw; }
+.login-card h1 { font-size: 24px; margin-bottom: 8px; text-align: center; }
+.login-card p { color: var(--text-muted); text-align: center; margin-bottom: 24px; font-size: 14px; }
+.login-card input { width: 100%; padding: 10px 12px; margin-bottom: 12px; border: 1px solid var(--card-border); border-radius: 6px; font-size: 14px; background: var(--bg); color: var(--text); }
+.login-card button { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 15px; }
+.login-card .err { color: var(--danger); font-size: 13px; margin-bottom: 8px; }
+
+/* Dashboard */
+.dashboard { display: none; }
+.sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 220px; background: var(--card-bg); border-right: 1px solid var(--card-border); padding: 20px 0; }
+.sidebar .logo { padding: 0 20px 20px; font-weight: 900; font-size: 20px; border-bottom: 1px solid var(--card-border); margin-bottom: 12px; }
+.sidebar .logo span { color: #93c5fd; }
+.sidebar a { display: block; padding: 10px 20px; color: var(--text-muted); font-size: 14px; font-weight: 500; text-decoration: none; }
+.sidebar a:hover, .sidebar a.active { color: var(--text); background: var(--bg); }
+.sidebar .logout { position: absolute; bottom: 20px; left: 20px; right: 20px; }
+.sidebar .logout button { width: 100%; padding: 8px; background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); border-radius: 6px; cursor: pointer; font-size: 13px; }
+
+.main { margin-left: 220px; padding: 24px; }
+.main h2 { font-size: 22px; margin-bottom: 16px; }
+
+.card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.stat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; }
+.stat-card .num { font-size: 32px; font-weight: 900; }
+.stat-card .label { color: var(--text-muted); font-size: 13px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--card-border); color: var(--text-muted); font-size: 12px; text-transform: uppercase; }
+td { padding: 8px 12px; border-bottom: 1px solid var(--card-border); }
+tr:hover { background: rgba(255,255,255,0.03); }
+
+.btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text); font-size: 12px; font-weight: 600; cursor: pointer; }
+.btn:hover { background: var(--bg); }
+.btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn.danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn.success { background: var(--success); color: #fff; border-color: var(--success); }
+
+.search-input { padding: 8px 12px; border: 1px solid var(--card-border); border-radius: 6px; background: var(--bg); color: var(--text); font-size: 13px; width: 300px; margin-bottom: 12px; }
+select.filter { padding: 8px 12px; border: 1px solid var(--card-border); border-radius: 6px; background: var(--bg); color: var(--text); font-size: 13px; margin-left: 8px; }
+
+/* Modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.active { display: flex; }
+.modal { background: var(--card-bg); border-radius: 12px; padding: 28px; width: 500px; max-width: 90vw; max-height: 90vh; overflow-y: auto; }
+.modal h3 { margin-bottom: 16px; }
+.modal label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; margin-top: 12px; }
+.modal input, .modal textarea, .modal select { width: 100%; padding: 8px 10px; border: 1px solid var(--card-border); border-radius: 6px; font-size: 13px; background: var(--bg); color: var(--text); font-family: inherit; }
+.modal textarea { min-height: 80px; }
+.modal .actions { display: flex; gap: 8px; margin-top: 20px; }
+.modal .actions .btn { flex: 1; justify-content: center; padding: 10px; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-page" id="loginPage">
+    <div class="login-card">
+        <h1>🔒 Admin Panel</h1>
+        <p>EveryTool.ai Dashboard</p>
+        <div class="err" id="loginErr"></div>
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPass" placeholder="Password">
+        <button onclick="doLogin()">Log In</button>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+    <div class="sidebar">
+        <div class="logo">EVERYTOOL<span>.AI</span></div>
+        <a href="#" onclick="showTab('stats')" class="active" id="nav-stats">📊 Stats</a>
+        <a href="#" onclick="showTab('tools')" id="nav-tools">🔧 Tools</a>
+        <a href="#" onclick="showTab('categories')" id="nav-categories">📁 Categories</a>
+        <a href="#" onclick="showTab('submissions')" id="nav-submissions">📩 Submissions</a>
+        <a href="#" onclick="showTab('subscribers')" id="nav-subscribers">📧 Subscribers</a>
+        <div class="logout"><button onclick="doLogout()">Log Out</button></div>
+    </div>
+
+    <div class="main">
+        <!-- STATS -->
+        <div class="tab-content active" id="tab-stats">
+            <h2>📊 Dashboard</h2>
+            <div class="stats-grid" id="statsGrid"></div>
+            <div class="card">
+                <h3>🔥 Most Clicked Tools</h3>
+                <table id="topClicked"><thead><tr><th>Tool</th><th>Clicks</th></tr></thead><tbody></tbody></table>
+            </div>
+            <div class="card" style="margin-top:12px">
+                <h3>❤️ Most Liked Tools</h3>
+                <table id="topLiked"><thead><tr><th>Tool</th><th>Likes</th></tr></thead><tbody></tbody></table>
+            </div>
+        </div>
+
+        <!-- TOOLS -->
+        <div class="tab-content" id="tab-tools">
+            <h2>🔧 Tools <button class="btn primary" onclick="showToolModal()" style="margin-left:12px">+ Add Tool</button>
+                <button class="btn" onclick="bulkImport()" style="margin-left:8px">📥 Bulk Import</button></h2>
+            <input class="search-input" placeholder="Search tools..." oninput="filterToolsAdmin(this.value)" id="toolSearch">
+            <select class="filter" id="catFilter" onchange="filterToolsAdmin(document.getElementById('toolSearch').value)">
+                <option value="">All Categories</option>
+            </select>
+            <div class="card"><table id="toolsTable"><thead><tr><th>Name</th><th>URL</th><th>Category</th><th>Status</th><th>Clicks</th><th>Likes</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+
+        <!-- CATEGORIES -->
+        <div class="tab-content" id="tab-categories">
+            <h2>📁 Categories <button class="btn primary" onclick="showCatModal()" style="margin-left:12px">+ Add Category</button></h2>
+            <div class="card"><table id="catsTable"><thead><tr><th>Order</th><th>Emoji</th><th>Name</th><th>Description</th><th>Tools</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+
+        <!-- SUBMISSIONS -->
+        <div class="tab-content" id="tab-submissions">
+            <h2>📩 Submissions</h2>
+            <div class="card"><table id="subsTable"><thead><tr><th>Name</th><th>URL</th><th>Description</th><th>Email</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+
+        <!-- SUBSCRIBERS -->
+        <div class="tab-content" id="tab-subscribers">
+            <h2>📧 Subscribers <button class="btn" onclick="exportCSV()" style="margin-left:12px">📤 Export CSV</button></h2>
+            <div class="card"><table id="subscrTable"><thead><tr><th>Email</th><th>Date</th></tr></thead><tbody></tbody></table></div>
+        </div>
+    </div>
+</div>
+
+<!-- Tool Modal -->
+<div class="modal-overlay" id="toolModal">
+    <div class="modal">
+        <h3 id="toolModalTitle">Add Tool</h3>
+        <input type="hidden" id="tmId">
+        <label>Name</label><input id="tmName">
+        <label>URL</label><input id="tmUrl">
+        <label>Description</label><textarea id="tmDesc"></textarea>
+        <label>Category</label><select id="tmCat"></select>
+        <label>Status</label><select id="tmStatus"><option value="active">Active</option><option value="pending">Pending</option><option value="rejected">Rejected</option></select>
+        <label>Featured</label><select id="tmFeatured"><option value="false">No</option><option value="true">Yes</option></select>
+        <label>Slug</label><input id="tmSlug">
+        <div class="actions">
+            <button class="btn" onclick="closeModal('toolModal')">Cancel</button>
+            <button class="btn primary" onclick="saveTool()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Category Modal -->
+<div class="modal-overlay" id="catModal">
+    <div class="modal">
+        <h3 id="catModalTitle">Add Category</h3>
+        <input type="hidden" id="cmId">
+        <label>Name</label><input id="cmName">
+        <label>Emoji</label><input id="cmEmoji" style="width:60px">
+        <label>Description</label><textarea id="cmDesc"></textarea>
+        <label>Slug</label><input id="cmSlug">
+        <label>Sort Order</label><input type="number" id="cmOrder">
+        <div class="actions">
+            <button class="btn" onclick="closeModal('catModal')">Cancel</button>
+            <button class="btn primary" onclick="saveCat()">Save</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://ecqvyfsxaofboilnlkna.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjcXZ5ZnN4YW9mYm9pbG5sa25hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzODkxMzIsImV4cCI6MjA4Nzk2NTEzMn0.l0fd6T6z6rfZw_p1H6vsehEDCYCBBFfHCAOLobKJZVE';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let allTools = [], allCats = [], currentUser = null;
+
+// Auth
+async function checkSession() {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) return;
+    const { data: profile } = await sb.from('profiles').select('is_admin').eq('id', user.id).single();
+    if (!profile?.is_admin) { document.getElementById('loginErr').textContent = 'Not an admin account'; return; }
+    currentUser = user;
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadAll();
+}
+
+async function doLogin() {
+    const email = document.getElementById('loginEmail').value;
+    const pass = document.getElementById('loginPass').value;
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) { document.getElementById('loginErr').textContent = error.message; return; }
+    const { data: profile } = await sb.from('profiles').select('is_admin').eq('id', data.user.id).single();
+    if (!profile?.is_admin) { document.getElementById('loginErr').textContent = 'Not an admin account'; await sb.auth.signOut(); return; }
+    currentUser = data.user;
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadAll();
+}
+
+async function doLogout() { await sb.auth.signOut(); location.reload(); }
+
+// Tabs
+function showTab(name) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('nav-' + name)?.classList.add('active');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(e.target.id); }));
+
+// Load all data
+async function loadAll() {
+    await Promise.all([loadStats(), loadToolsAdmin(), loadCats(), loadSubmissions(), loadSubscribers()]);
+}
+
+// STATS
+async function loadStats() {
+    const [toolsR, catsR, subsR, subscrR] = await Promise.all([
+        sb.from('tools').select('id', { count: 'exact', head: true }),
+        sb.from('categories').select('id', { count: 'exact', head: true }),
+        sb.from('submissions').select('id', { count: 'exact', head: true }),
+        sb.from('email_subscribers').select('id', { count: 'exact', head: true })
+    ]);
+    document.getElementById('statsGrid').innerHTML = [
+        { n: toolsR.count||0, l: 'Total Tools', e: '🔧' },
+        { n: catsR.count||0, l: 'Categories', e: '📁' },
+        { n: subsR.count||0, l: 'Submissions', e: '📩' },
+        { n: subscrR.count||0, l: 'Subscribers', e: '📧' }
+    ].map(s => `<div class="stat-card"><div class="num">${s.e} ${s.n}</div><div class="label">${s.l}</div></div>`).join('');
+
+    const { data: clicked } = await sb.from('tools').select('name,clicks').order('clicks', { ascending: false }).limit(10);
+    document.querySelector('#topClicked tbody').innerHTML = (clicked||[]).map(t => `<tr><td>${t.name}</td><td>${t.clicks}</td></tr>`).join('');
+    const { data: liked } = await sb.from('tools').select('name,likes_count').order('likes_count', { ascending: false }).limit(10);
+    document.querySelector('#topLiked tbody').innerHTML = (liked||[]).map(t => `<tr><td>${t.name}</td><td>${t.likes_count}</td></tr>`).join('');
+}
+
+// TOOLS
+async function loadToolsAdmin() {
+    const { data } = await sb.from('tools').select('*, categories(name,emoji)').order('name');
+    allTools = data || [];
+    renderToolsTable(allTools);
+}
+
+function renderToolsTable(tools) {
+    document.querySelector('#toolsTable tbody').innerHTML = tools.map(t => `<tr>
+        <td><strong>${t.name}</strong></td>
+        <td><a href="${t.url}" target="_blank" style="font-size:12px">${t.url.substring(0,40)}...</a></td>
+        <td>${t.categories ? t.categories.emoji + ' ' + t.categories.name : '-'}</td>
+        <td>${t.status}</td><td>${t.clicks||0}</td><td>${t.likes_count||0}</td>
+        <td><button class="btn" onclick="editTool('${t.id}')">✏️</button> <button class="btn danger" onclick="deleteTool('${t.id}','${t.name.replace(/'/g,"\\'")}')">🗑</button></td>
+    </tr>`).join('');
+}
+
+function filterToolsAdmin(val) {
+    const lf = val.toLowerCase();
+    const catId = document.getElementById('catFilter').value;
+    let filtered = allTools;
+    if (lf) filtered = filtered.filter(t => t.name.toLowerCase().includes(lf) || (t.description||'').toLowerCase().includes(lf));
+    if (catId) filtered = filtered.filter(t => t.category_id === catId);
+    renderToolsTable(filtered);
+}
+
+function showToolModal(tool) {
+    document.getElementById('toolModalTitle').textContent = tool ? 'Edit Tool' : 'Add Tool';
+    document.getElementById('tmId').value = tool?.id || '';
+    document.getElementById('tmName').value = tool?.name || '';
+    document.getElementById('tmUrl').value = tool?.url || '';
+    document.getElementById('tmDesc').value = tool?.description || '';
+    document.getElementById('tmStatus').value = tool?.status || 'active';
+    document.getElementById('tmFeatured').value = String(tool?.featured || false);
+    document.getElementById('tmSlug').value = tool?.slug || '';
+    // populate cat dropdown
+    const sel = document.getElementById('tmCat');
+    sel.innerHTML = '<option value="">None</option>' + allCats.map(c => `<option value="${c.id}" ${c.id===tool?.category_id?'selected':''}>${c.emoji} ${c.name}</option>`).join('');
+    document.getElementById('toolModal').classList.add('active');
+}
+
+function editTool(id) { showToolModal(allTools.find(t => t.id === id)); }
+
+async function saveTool() {
+    const id = document.getElementById('tmId').value;
+    const slug = document.getElementById('tmSlug').value || document.getElementById('tmName').value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const payload = {
+        name: document.getElementById('tmName').value,
+        url: document.getElementById('tmUrl').value,
+        description: document.getElementById('tmDesc').value,
+        category_id: document.getElementById('tmCat').value || null,
+        status: document.getElementById('tmStatus').value,
+        featured: document.getElementById('tmFeatured').value === 'true',
+        slug
+    };
+    if (id) { await sb.from('tools').update(payload).eq('id', id); }
+    else { await sb.from('tools').insert(payload); }
+    closeModal('toolModal');
+    loadToolsAdmin();
+}
+
+async function deleteTool(id, name) {
+    if (!confirm(`Delete "${name}"?`)) return;
+    await sb.from('tools').delete().eq('id', id);
+    loadToolsAdmin();
+}
+
+async function bulkImport() {
+    const json = prompt('Paste JSON array of tools:\n[{"name":"...","url":"...","description":"..."}]');
+    if (!json) return;
+    try {
+        const tools = JSON.parse(json);
+        const { error } = await sb.from('tools').insert(tools.map(t => ({ ...t, status: 'active', slug: t.slug || t.name.toLowerCase().replace(/[^a-z0-9]+/g,'-') })));
+        if (error) alert(error.message); else { alert(`Imported ${tools.length} tools`); loadToolsAdmin(); }
+    } catch(e) { alert('Invalid JSON: ' + e.message); }
+}
+
+// CATEGORIES
+async function loadCats() {
+    const { data } = await sb.from('categories').select('*, tools(id)').order('sort_order');
+    allCats = (data||[]).map(c => ({ ...c, tool_count: c.tools?.length || 0 }));
+    renderCatsTable();
+    // populate filter
+    document.getElementById('catFilter').innerHTML = '<option value="">All Categories</option>' + allCats.map(c => `<option value="${c.id}">${c.emoji} ${c.name}</option>`).join('');
+}
+
+function renderCatsTable() {
+    document.querySelector('#catsTable tbody').innerHTML = allCats.map(c => `<tr>
+        <td><button class="btn" onclick="moveCat('${c.id}',-1)">↑</button> ${c.sort_order} <button class="btn" onclick="moveCat('${c.id}',1)">↓</button></td>
+        <td>${c.emoji}</td><td><strong>${c.name}</strong></td>
+        <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis">${c.description||''}</td>
+        <td>${c.tool_count}</td>
+        <td><button class="btn" onclick="editCat('${c.id}')">✏️</button> <button class="btn danger" onclick="deleteCat('${c.id}','${c.name.replace(/'/g,"\\'")}')">🗑</button></td>
+    </tr>`).join('');
+}
+
+function showCatModal(cat) {
+    document.getElementById('catModalTitle').textContent = cat ? 'Edit Category' : 'Add Category';
+    document.getElementById('cmId').value = cat?.id || '';
+    document.getElementById('cmName').value = cat?.name || '';
+    document.getElementById('cmEmoji').value = cat?.emoji || '🔧';
+    document.getElementById('cmDesc').value = cat?.description || '';
+    document.getElementById('cmSlug').value = cat?.slug || '';
+    document.getElementById('cmOrder').value = cat?.sort_order ?? allCats.length;
+    document.getElementById('catModal').classList.add('active');
+}
+
+function editCat(id) { showCatModal(allCats.find(c => c.id === id)); }
+
+async function saveCat() {
+    const id = document.getElementById('cmId').value;
+    const slug = document.getElementById('cmSlug').value || document.getElementById('cmName').value.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const payload = { name: document.getElementById('cmName').value, emoji: document.getElementById('cmEmoji').value, description: document.getElementById('cmDesc').value, slug, sort_order: parseInt(document.getElementById('cmOrder').value) || 0 };
+    if (id) { await sb.from('categories').update(payload).eq('id', id); }
+    else { await sb.from('categories').insert(payload); }
+    closeModal('catModal');
+    loadCats();
+}
+
+async function deleteCat(id, name) {
+    if (!confirm(`Delete category "${name}"? Tools in this category will become uncategorized.`)) return;
+    await sb.from('categories').delete().eq('id', id);
+    loadCats();
+}
+
+async function moveCat(id, dir) {
+    const idx = allCats.findIndex(c => c.id === id);
+    const swapIdx = idx + dir;
+    if (swapIdx < 0 || swapIdx >= allCats.length) return;
+    await Promise.all([
+        sb.from('categories').update({ sort_order: allCats[swapIdx].sort_order }).eq('id', allCats[idx].id),
+        sb.from('categories').update({ sort_order: allCats[idx].sort_order }).eq('id', allCats[swapIdx].id)
+    ]);
+    loadCats();
+}
+
+// SUBMISSIONS
+async function loadSubmissions() {
+    const { data } = await sb.from('submissions').select('*').order('created_at', { ascending: false });
+    document.querySelector('#subsTable tbody').innerHTML = (data||[]).map(s => `<tr>
+        <td><strong>${s.name}</strong></td>
+        <td><a href="${s.url}" target="_blank">${s.url.substring(0,35)}...</a></td>
+        <td style="max-width:200px">${s.description||''}</td>
+        <td>${s.submitted_email||'-'}</td>
+        <td>${new Date(s.created_at).toLocaleDateString()}</td>
+        <td>${s.status}</td>
+        <td>${s.status === 'pending' ? `
+            <button class="btn success" onclick="approveSubmission('${s.id}')">✅ Approve</button>
+            <button class="btn danger" onclick="rejectSubmission('${s.id}')">❌ Reject</button>
+        ` : s.status}</td>
+    </tr>`).join('');
+}
+
+async function approveSubmission(id) {
+    const { data: sub } = await sb.from('submissions').select('*').eq('id', id).single();
+    if (!sub) return;
+    const slug = sub.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    await sb.from('tools').insert({ name: sub.name, url: sub.url, description: sub.description, category_id: sub.category_id, status: 'active', slug });
+    await sb.from('submissions').update({ status: 'approved', reviewed_by: currentUser.id, reviewed_at: new Date().toISOString() }).eq('id', id);
+    loadSubmissions(); loadToolsAdmin(); loadStats();
+}
+
+async function rejectSubmission(id) {
+    const notes = prompt('Rejection reason (optional):');
+    await sb.from('submissions').update({ status: 'rejected', reviewer_notes: notes, reviewed_by: currentUser.id, reviewed_at: new Date().toISOString() }).eq('id', id);
+    loadSubmissions();
+}
+
+// SUBSCRIBERS
+let allSubscribers = [];
+async function loadSubscribers() {
+    const { data } = await sb.from('email_subscribers').select('*').order('created_at', { ascending: false });
+    allSubscribers = data || [];
+    document.querySelector('#subscrTable tbody').innerHTML = allSubscribers.map(s => `<tr><td>${s.email}</td><td>${new Date(s.created_at).toLocaleDateString()}</td></tr>`).join('');
+}
+
+function exportCSV() {
+    const csv = 'email,subscribed_at\n' + allSubscribers.map(s => `${s.email},${s.created_at}`).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'subscribers.csv';
+    a.click();
+}
+
+checkSession();
+</script>
+</body>
+</html>
