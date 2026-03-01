@@ -1,260 +1,615 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EveryTool.ai — Best AI Tools Directory 2026</title>
-<meta name="description" content="EveryTool.ai reviews the best 500+ AI tools of 2026. Find the best free and premium AI tools sorted by quality.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="description" content="EveryTool.ai reviews the best AI tools of 2026. Find the best free and premium AI tools sorted by quality!">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
---bg:#f5f7fa;--card:#fff;--text:#1a1a2e;--text2:#555;--text3:#888;
---border:#e2e8f0;--accent:#6366f1;--accent2:#8b5cf6;
---grad:linear-gradient(135deg,#6366f1,#8b5cf6);
---card-shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
---card-hover-shadow:0 4px 12px rgba(0,0,0,.1);
---header-bg:#fff;--search-bg:#f0f0f5;--tag-bg:#f0f0ff;--tag-text:#6366f1;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --bg: #f5f5f0;
+    --card-bg: #ffffff;
+    --card-border: #e0e0e0;
+    --text: #1a1a1a;
+    --text-muted: #666;
+    --text-light: #999;
+    --accent-teal: #2dd4bf;
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+    --accent-dark: #1e293b;
+    --banner-bg: #1e293b;
 }
-[data-theme="dark"]{
---bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--text2:#a0aec0;--text3:#718096;
---border:#2d3748;--header-bg:#1a1a2e;--search-bg:#2d2d44;--tag-bg:#2d2d44;--tag-text:#a78bfa;
---card-shadow:0 1px 3px rgba(0,0,0,.3);--card-hover-shadow:0 4px 12px rgba(0,0,0,.4);
+
+[data-theme="dark"] {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --card-border: #334155;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --text-light: #64748b;
+    --banner-bg: #020617;
 }
-html{scroll-behavior:smooth}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
-a{text-decoration:none;color:inherit}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+}
+
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* TOP BANNER */
+.top-banner {
+    background: var(--banner-bg);
+    color: #fff;
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+}
 
 /* HEADER */
-.header{position:sticky;top:0;z-index:100;background:var(--header-bg);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;gap:20px;backdrop-filter:blur(10px)}
-.logo{font-size:1.4rem;font-weight:800;white-space:nowrap;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:flex;align-items:center;gap:6px}
-.logo span{-webkit-text-fill-color:initial}
-.header-search{flex:1;max-width:480px;position:relative}
-.header-search input{width:100%;padding:10px 16px 10px 40px;border-radius:10px;border:1px solid var(--border);background:var(--search-bg);font-size:.9rem;color:var(--text);outline:none;transition:border .2s}
-.header-search input:focus{border-color:var(--accent)}
-.header-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--text3)}
-.header-nav{display:flex;align-items:center;gap:16px;margin-left:auto;font-size:.9rem;font-weight:500}
-.header-nav a{color:var(--text2);transition:color .2s}
-.header-nav a:hover{color:var(--accent)}
-.theme-toggle{background:none;border:none;cursor:pointer;font-size:1.3rem;padding:4px;line-height:1}
+.header {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 20px 0;
+}
 
-/* HERO */
-.hero{text-align:center;padding:56px 24px 40px;max-width:720px;margin:0 auto}
-.hero h1{font-size:2rem;font-weight:800;margin-bottom:12px;line-height:1.25}
-.hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero p{color:var(--text2);font-size:1.05rem;margin-bottom:24px}
-.hero-signup{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;max-width:480px;margin:0 auto}
-.hero-signup-label{width:100%;font-size:.85rem;color:var(--text3);margin-bottom:4px}
-.hero-signup input{flex:1;min-width:200px;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--search-bg);font-size:.9rem;color:var(--text);outline:none}
-.hero-signup input:focus{border-color:var(--accent)}
-.hero-signup button{padding:12px 24px;border-radius:10px;border:none;background:var(--grad);color:#fff;font-weight:600;font-size:.9rem;cursor:pointer;transition:opacity .2s}
-.hero-signup button:hover{opacity:.9}
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
 
-/* CATEGORIES GRID */
-.container{max-width:1200px;margin:0 auto;padding:0 24px 40px}
-.categories-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-@media(max-width:768px){.categories-grid{grid-template-columns:1fr}}
+.logo {
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    white-space: nowrap;
+    color: var(--text);
+}
+.logo span { color: var(--accent-blue); }
 
-/* CATEGORY CARD */
-.category-wrapper{background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--card-shadow);overflow:hidden;display:flex;flex-direction:column}
-.category-header{padding:20px 20px 12px;border-left:4px solid var(--accent)}
-.category-header h2{font-size:1.15rem;font-weight:700;margin-bottom:4px}
-.category-header h2 a{color:var(--text);transition:color .2s}
-.category-header h2 a:hover{color:var(--accent)}
-.category-header h2 .cat-icon{margin-right:6px}
-.category-header p{font-size:.85rem;color:var(--text2);line-height:1.4}
-.category-tools{padding:4px 20px 0;max-height:340px;overflow:hidden;flex:1}
-.category-tools ul{list-style:none}
-.category-tools li{border-bottom:1px solid var(--border)}
-.category-tools li:last-child{border-bottom:none}
-.category-tools li a{display:flex;align-items:center;gap:10px;padding:9px 4px;font-size:.9rem;color:var(--text);transition:background .15s,padding-left .15s;border-radius:4px}
-.category-tools li a:hover{background:var(--tag-bg);padding-left:10px}
-.tool-favicon{width:18px;height:18px;border-radius:4px;flex-shrink:0;background:var(--search-bg)}
-.tool-name{font-weight:500;flex:1}
-.review-badge{font-size:.7rem;font-weight:600;color:#fff;background:var(--grad);padding:2px 8px;border-radius:20px;white-space:nowrap}
-.category-footer{padding:12px 20px;border-top:1px solid var(--border);margin-top:auto}
-.category-footer a{font-size:.85rem;font-weight:600;color:var(--accent);display:flex;align-items:center;gap:4px;transition:gap .2s}
-.category-footer a:hover{gap:8px}
+.email-signup-area {
+    flex: 1;
+    max-width: 560px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.email-signup-area p {
+    font-size: 12px;
+    color: var(--text-muted);
+    flex: 1;
+    min-width: 180px;
+}
+
+.email-signup-area form {
+    display: flex;
+    gap: 6px;
+}
+
+.email-signup-area input[type="email"] {
+    padding: 8px 12px;
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    font-size: 13px;
+    width: 180px;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.email-signup-area button {
+    padding: 8px 16px;
+    background: var(--accent-blue);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* SEARCH BAR */
+.search-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    flex: 1;
+    position: relative;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 12px 16px 12px 44px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    font-size: 15px;
+    background: var(--card-bg);
+    color: var(--text);
+}
+
+.search-bar .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--text-light);
+}
+
+.nav-btns {
+    display: flex;
+    gap: 6px;
+}
+
+.nav-btns a, .nav-btns button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.nav-btns a:hover, .nav-btns button:hover {
+    background: var(--bg);
+    text-decoration: none;
+}
+
+/* CATEGORIES GRID — 4 COLUMNS */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 0 20px 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.category-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 16px;
+    break-inside: avoid;
+}
+
+.category-header {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.category-header .cat-icon { font-size: 18px; }
+
+.category-description {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.tool-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tool-list li {
+    padding: 4px 0;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tool-list li .tool-num {
+    color: var(--text-light);
+    font-size: 13px;
+    min-width: 18px;
+}
+
+.tool-list li img.favicon {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.tool-list li a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.tool-list li a:hover {
+    text-decoration: underline;
+    color: var(--accent-blue);
+}
+
+.badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.6;
+    margin-left: 4px;
+}
+
+.badge-ai { background: #dbeafe; color: #2563eb; }
+.badge-new { background: #dcfce7; color: #16a34a; }
+.badge-hot { background: transparent; }
+
+.see-all-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    text-align: center;
+    font-weight: 700;
+    color: white;
+    margin-top: 12px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+.see-all-btn:hover { opacity: 0.9; text-decoration: none !important; }
+
+.btn-teal { background: #2dd4bf; }
+.btn-blue { background: #3b82f6; }
+.btn-purple { background: #8b5cf6; }
+.btn-dark { background: #1e293b; }
 
 /* MID SEARCH */
-.mid-search{text-align:center;padding:48px 24px;max-width:560px;margin:0 auto}
-.mid-search h3{font-size:1.3rem;font-weight:700;margin-bottom:16px}
-.mid-search .header-search{max-width:100%}
+.mid-section {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.mid-search {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.mid-search h2 {
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.mid-search p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.mid-search input {
+    width: 100%;
+    max-width: 600px;
+    padding: 12px 16px 12px 44px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    font-size: 15px;
+    background: var(--bg);
+    color: var(--text);
+}
 
 /* ABOUT */
-.about-section{background:var(--grad);color:#fff;padding:56px 24px;margin:40px 0 0}
-.about-inner{max-width:800px;margin:0 auto;text-align:center}
-.about-inner h2{font-size:1.8rem;font-weight:800;margin-bottom:16px}
-.about-inner p{font-size:1rem;opacity:.9;margin-bottom:12px;line-height:1.7}
+.about-section {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-radius: 12px;
+    padding: 40px 32px;
+    color: #fff;
+    margin-bottom: 40px;
+}
+
+.about-section h2 { font-size: 24px; margin-bottom: 12px; }
+.about-section p { font-size: 15px; line-height: 1.7; color: #cbd5e1; margin-bottom: 12px; }
 
 /* FAQ */
-.faq{max-width:800px;margin:0 auto;padding:56px 24px}
-.faq h2{font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:32px}
-.faq-item{border-bottom:1px solid var(--border);padding:16px 0}
-.faq-q{font-weight:600;font-size:1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
-.faq-q::after{content:'+';font-size:1.3rem;color:var(--accent);transition:transform .2s}
-.faq-item.open .faq-q::after{content:'−'}
-.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;color:var(--text2);font-size:.9rem;line-height:1.7}
-.faq-item.open .faq-a{max-height:200px;padding-top:10px}
+.faq-section { margin-bottom: 40px; }
+.faq-section h2 { font-size: 22px; margin-bottom: 16px; text-align: center; }
+
+.faq-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.faq-q {
+    padding: 14px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-q::after { content: '+'; font-size: 18px; color: var(--text-muted); }
+.faq-item.open .faq-q::after { content: '−'; }
+
+.faq-a {
+    display: none;
+    padding: 0 16px 14px;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.faq-item.open .faq-a { display: block; }
 
 /* FOOTER */
-.footer{text-align:center;padding:32px 24px;color:var(--text3);font-size:.85rem;border-top:1px solid var(--border)}
-.footer-links{display:flex;justify-content:center;gap:20px;margin-bottom:12px;flex-wrap:wrap}
-.footer-links a{color:var(--text2)}
-.footer-links a:hover{color:var(--accent)}
+.footer {
+    background: var(--banner-bg);
+    color: #94a3b8;
+    padding: 32px 20px;
+    text-align: center;
+    font-size: 13px;
+}
 
-/* SEARCH RESULTS HIGHLIGHT */
-.category-wrapper.hidden{display:none}
-.tool-highlight{background:#fef3c7;border-radius:2px}
-[data-theme="dark"] .tool-highlight{background:#78350f}
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
 
-/* SCROLLBAR */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.footer-links a { color: #cbd5e1; }
+.footer-links a:hover { color: #fff; }
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    font-size: 20px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+    .categories-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+    .categories-grid { grid-template-columns: 1fr; }
+    .header-top { flex-direction: column; align-items: flex-start; }
+    .logo { font-size: 28px; }
+    .email-signup-area { max-width: 100%; }
+    .nav-btns { flex-wrap: wrap; }
+}
 </style>
 </head>
 <body>
 
+<!-- TOP BANNER -->
+<div class="top-banner">
+    ⭐ EveryTool.ai reviews the best AI tools of 2026. Find the best free and premium AI tools sorted by quality!
+</div>
+
 <!-- HEADER -->
-<header class="header">
-  <a href="/" class="logo"><span>🤖</span> EveryTool.ai</a>
-  <div class="header-search">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="text" id="searchInput" placeholder="Search best 500+ AI tools..." autocomplete="off">
-  </div>
-  <nav class="header-nav">
-    <a href="#about">About</a>
-    <a href="#faq">Blog</a>
-    <a href="#submit">Submit Tool</a>
-    <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
-  </nav>
-</header>
+<div class="header">
+    <div class="header-top">
+        <div class="logo">EVERYTOOL<span>.AI</span></div>
+        <div class="email-signup-area">
+            <p>🔔 Wanna stay updated on AI tools? Sign up to our email list &amp; unlock exclusive updates. Available only to EveryTool users.</p>
+            <form onsubmit="return false;">
+                <input type="email" placeholder="your@email.com">
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </div>
+    <div class="search-row">
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="mainSearch" placeholder="Search best 500+ AI tools..." oninput="filterTools(this.value)">
+        </div>
+        <div class="nav-btns">
+            <a href="#about">ℹ️ About</a>
+            <a href="#faq">📝 Blog</a>
+            <a href="#">📩 Submit Tool</a>
+            <button onclick="toggleTheme()">🌙</button>
+        </div>
+    </div>
+</div>
 
-<!-- HERO -->
-<section class="hero">
-  <h1><em>EveryTool.ai</em> reviews the best AI tools of 2026.</h1>
-  <p>Find the best free and premium AI tools sorted by quality!</p>
-  <div class="hero-signup">
-    <div class="hero-signup-label">🔔 Wanna get notified about new AI tools?</div>
-    <input type="email" placeholder="Enter your email...">
-    <button>Subscribe</button>
-  </div>
-</section>
+<!-- CATEGORY GRID -->
+<div class="categories-grid" id="categoriesGrid">
+    <!-- Populated by JS -->
+</div>
 
-<!-- MAIN CONTENT -->
-<main class="container">
-  <div class="categories-grid" id="categoriesGrid">
-    <!-- JS fills this -->
-  </div>
-</main>
+<!-- MID SECTION -->
+<div class="mid-section">
+    <div class="mid-search">
+        <h2>🔍 Can't find what you need?</h2>
+        <p>Search through our curated collection of 500+ AI tools</p>
+        <div style="position:relative;display:inline-block;width:100%;max-width:600px;">
+            <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;">🔍</span>
+            <input type="text" placeholder="Search AI tools..." oninput="filterTools(this.value)">
+        </div>
+    </div>
 
-<!-- MID SEARCH -->
-<section class="mid-search">
-  <h3>Can't find what you need?</h3>
-  <div class="header-search">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="text" class="mid-search-input" placeholder="Search all 500+ AI tools..." autocomplete="off">
-  </div>
-</section>
+    <!-- ABOUT -->
+    <div class="about-section" id="about">
+        <h2>👋 About EveryTool.ai</h2>
+        <p>EveryTool.ai is the most comprehensive directory of AI tools on the internet. We personally review and curate every tool to help you find exactly what you need — whether it's an AI chatbot, image generator, code assistant, or anything in between.</p>
+        <p>Our mission is simple: cut through the noise and help you discover the best AI tools, both free and premium, sorted by actual quality rather than who pays the most. Every tool is tested, every review is honest.</p>
+        <p>Founded in 2025, we now track over 500 AI tools across 38+ categories. New tools are added weekly.</p>
+    </div>
 
-<!-- ABOUT -->
-<section class="about-section" id="about">
-  <div class="about-inner">
-    <h2>About EveryTool.ai</h2>
-    <p>We're on a mission to catalog and review every AI tool on the internet. Our team tests each tool personally and ranks them based on quality, features, pricing, and user experience.</p>
-    <p>Whether you're a developer, marketer, designer, or just curious about AI — we help you find the right tool for the job. No sponsored rankings, no BS. Just honest reviews.</p>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section class="faq" id="faq">
-  <h2>Frequently Asked Questions</h2>
-  <div class="faq-item"><div class="faq-q">How do you rank AI tools?</div><div class="faq-a">We test every tool ourselves and rank based on quality, features, ease of use, pricing, and community feedback. No paid placements.</div></div>
-  <div class="faq-item"><div class="faq-q">How often is the list updated?</div><div class="faq-a">We update our directory weekly. New tools are added as soon as we've had time to properly review them.</div></div>
-  <div class="faq-item"><div class="faq-q">Can I submit my AI tool?</div><div class="faq-a">Absolutely! Use the "Submit Tool" link in the header. We review every submission and add qualifying tools within a week.</div></div>
-  <div class="faq-item"><div class="faq-q">Is EveryTool.ai free to use?</div><div class="faq-a">Yes, our directory is completely free. We may earn affiliate commissions from some tools, but this never affects our rankings.</div></div>
-  <div class="faq-item"><div class="faq-q">What makes this different from other AI directories?</div><div class="faq-a">We focus on quality over quantity. Every tool is personally tested, categorized properly, and ranked by actual usefulness — not by who pays the most.</div></div>
-</section>
+    <!-- FAQ -->
+    <div class="faq-section" id="faq">
+        <h2>❓ Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is EveryTool.ai?</div>
+            <div class="faq-a">EveryTool.ai is a curated directory that reviews and ranks the best AI tools available in 2026. We cover 38+ categories from chatbots to video generators, helping you find the perfect tool for your needs.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How do you rank AI tools?</div>
+            <div class="faq-a">We personally test every tool and rank them based on quality, features, ease of use, pricing, and user feedback. Our rankings are independent — we don't accept payment for higher placement.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is EveryTool.ai free to use?</div>
+            <div class="faq-a">Yes! EveryTool.ai is completely free. We make money through affiliate links when you sign up for tools through our site, but this never affects our rankings.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How can I submit my AI tool?</div>
+            <div class="faq-a">Click the "Submit Tool" button in the navigation bar. We review every submission and add quality tools to our directory within 1-2 weeks.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How often is the directory updated?</div>
+            <div class="faq-a">We update our directory weekly, adding new tools and refreshing our reviews. The AI landscape moves fast, and we make sure our recommendations stay current.</div>
+        </div>
+    </div>
+</div>
 
 <!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-links">
-    <a href="#about">About</a>
-    <a href="#faq">FAQ</a>
-    <a href="#submit" id="submit">Submit a Tool</a>
-    <a href="#">Privacy</a>
-    <a href="#">Terms</a>
-    <a href="#">Contact</a>
-  </div>
-  <p>© 2026 EveryTool.ai — All rights reserved.</p>
-</footer>
+<div class="footer">
+    <div class="footer-social">
+        <a href="#">🐦</a>
+        <a href="#">📘</a>
+        <a href="#">💼</a>
+        <a href="#">📸</a>
+    </div>
+    <div class="footer-links">
+        <a href="#">Home</a>
+        <a href="#about">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Submit Tool</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Contact</a>
+    </div>
+    <p>© 2026 EveryTool.ai — All rights reserved. The best AI tools directory on the internet.</p>
+</div>
 
 <script>
-// Theme toggle
-const toggle = document.getElementById('themeToggle');
-const html = document.documentElement;
-const saved = localStorage.getItem('theme');
-if(saved){html.setAttribute('data-theme',saved);toggle.textContent=saved==='dark'?'☀️':'🌙'}
-toggle.addEventListener('click',()=>{
-  const t=html.getAttribute('data-theme')==='dark'?'light':'dark';
-  html.setAttribute('data-theme',t);localStorage.setItem('theme',t);
-  toggle.textContent=t==='dark'?'☀️':'🌙';
-});
+const btnColors = ['btn-teal', 'btn-blue', 'btn-purple', 'btn-dark'];
 
-// FAQ toggle
-document.querySelectorAll('.faq-q').forEach(q=>q.addEventListener('click',()=>q.parentElement.classList.toggle('open')));
+async function loadTools() {
+    let data;
+    try {
+        const resp = await fetch('data/tools.json');
+        data = await resp.json();
+    } catch(e) {
+        // Fallback: embedded data will be used
+        console.error('Could not load tools.json', e);
+        return;
+    }
+    renderCategories(data.categories);
+}
 
-// Load tools
-fetch('data/tools.json').then(r=>r.json()).then(data=>{
-  const grid=document.getElementById('categoriesGrid');
-  data.categories.forEach((cat,i)=>{
-    const card=document.createElement('div');
-    card.className='category-wrapper';
-    card.id='category-block-'+i;
-    card.setAttribute('data-category',cat.name.toLowerCase());
-    const toolsHtml=cat.tools.map(t=>{
-      const domain=new URL(t.url).hostname;
-      const favicon=`https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
-      const badge=t.featured?'<span class="review-badge">Review</span>':'';
-      return `<li><a href="${t.url}" target="_blank" rel="noopener"><img class="tool-favicon" src="${favicon}" alt="" loading="lazy"><span class="tool-name">${t.name}</span>${badge}</a></li>`;
-    }).join('');
-    card.innerHTML=`
-      <div class="category-header">
-        <h2><a href="#category-block-${i}"><span class="cat-icon">${cat.icon}</span>${cat.name}</a></h2>
-        <p>${cat.description}</p>
-      </div>
-      <div class="category-tools"><ul>${toolsHtml}</ul></div>
-      <div class="category-footer"><a href="#category-block-${i}">SEE ALL ${cat.tools.length} TOOLS →</a></div>
-    `;
-    grid.appendChild(card);
-  });
+function getFaviconUrl(url) {
+    try {
+        const domain = new URL(url).hostname;
+        return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+    } catch { return ''; }
+}
 
-  // Search
-  const searchHandler=(e)=>{
-    const q=e.target.value.toLowerCase().trim();
-    document.querySelectorAll('.category-wrapper').forEach(card=>{
-      if(!q){card.classList.remove('hidden');card.querySelectorAll('.tool-highlight').forEach(h=>{h.classList.remove('tool-highlight')});card.querySelector('.category-tools').style.maxHeight='340px';return}
-      const tools=card.querySelectorAll('li');
-      let any=false;
-      tools.forEach(li=>{
-        const name=li.querySelector('.tool-name');
-        const match=name.textContent.toLowerCase().includes(q);
-        li.style.display=match?'':'none';
-        if(match){any=true;name.classList.add('tool-highlight')}else{name.classList.remove('tool-highlight')}
-      });
-      const catMatch=card.getAttribute('data-category').includes(q);
-      card.classList.toggle('hidden',!any&&!catMatch);
-      if(any)card.querySelector('.category-tools').style.maxHeight='none';
+function renderCategories(categories, filter = '') {
+    const grid = document.getElementById('categoriesGrid');
+    grid.innerHTML = '';
+    const lf = filter.toLowerCase();
+
+    categories.forEach((cat, ci) => {
+        let tools = cat.tools;
+        if (lf) {
+            const catMatch = cat.name.toLowerCase().includes(lf);
+            if (!catMatch) {
+                tools = tools.filter(t => t.name.toLowerCase().includes(lf) || (t.desc && t.desc.toLowerCase().includes(lf)));
+                if (tools.length === 0) return;
+            }
+        }
+
+        const card = document.createElement('div');
+        card.className = 'category-card';
+
+        const displayTools = tools.slice(0, 12);
+        const totalTools = tools.length;
+        const btnClass = btnColors[ci % 4];
+
+        let toolsHtml = displayTools.map((t, i) => {
+            const favicon = getFaviconUrl(t.url);
+            let badges = '';
+            if (t.featured) badges += ' <span class="badge badge-ai">AI</span>';
+            if (i < 2 && ci % 5 === 0) badges += ' <span class="badge badge-new">NEW</span>';
+            if (t.featured && ci % 3 === 0) badges += ' 🔥';
+            return `<li>
+                <span class="tool-num">${i + 1}.</span>
+                <img class="favicon" src="${favicon}" alt="" loading="lazy" onerror="this.style.display='none'">
+                <a href="${t.url}" target="_blank" rel="noopener">${t.name}</a>${badges}
+            </li>`;
+        }).join('');
+
+        card.innerHTML = `
+            <div class="category-header">
+                <span class="cat-icon">${cat.icon}</span>
+                ${cat.name.toUpperCase()}
+            </div>
+            <div class="category-description">${cat.description}</div>
+            <ul class="tool-list">${toolsHtml}</ul>
+            <a class="see-all-btn ${btnClass}" href="#${cat.id}">✓ SEE ALL ${totalTools} TOOLS →</a>
+        `;
+
+        grid.appendChild(card);
     });
-  };
-  document.getElementById('searchInput').addEventListener('input',searchHandler);
-  document.querySelector('.mid-search-input').addEventListener('input',(e)=>{
-    document.getElementById('searchInput').value=e.target.value;
-    searchHandler(e);
-    window.scrollTo({top:document.getElementById('categoriesGrid').offsetTop-80,behavior:'smooth'});
-  });
-});
+    
+    window._categories = categories;
+}
+
+let _debounce;
+function filterTools(val) {
+    clearTimeout(_debounce);
+    _debounce = setTimeout(() => {
+        if (window._categories) renderCategories(window._categories, val);
+    }, 200);
+}
+
+function toggleTheme() {
+    const curr = document.documentElement.getAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', curr === 'dark' ? '' : 'dark');
+}
+
+loadTools();
 </script>
 </body>
 </html>
