@@ -273,23 +273,26 @@ a:hover { text-decoration: underline; }
 .see-all-btn {
     display: block;
     width: 100%;
-    padding: 10px;
-    border-radius: 20px;
+    padding: 8px;
+    border-radius: 6px;
     text-align: center;
-    font-weight: 700;
-    color: white;
+    font-weight: 600;
+    color: var(--text-muted);
     margin-top: 12px;
-    font-size: 14px;
-    border: none;
+    font-size: 12px;
+    border: 1px solid var(--card-border);
+    background: transparent;
     cursor: pointer;
     text-decoration: none !important;
+    letter-spacing: 0.3px;
+    transition: background 0.2s, color 0.2s;
 }
 
-.see-all-btn:hover { opacity: 0.9; text-decoration: none !important; }
+.see-all-btn:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); text-decoration: none !important; }
 
-.btn-teal { background: #2dd4bf; }
-.btn-blue { background: #3b82f6; }
-.btn-purple { background: #8b5cf6; }
+.btn-teal { border-color: #99e0d6; color: #2aa89a; }
+.btn-blue { border-color: #93bbf5; color: #3b82f6; }
+.btn-purple { border-color: #c4b5fd; color: #8b5cf6; }
 .btn-dark { background: #1e293b; }
 
 /* MID SEARCH */
