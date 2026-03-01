@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Favorites — EveryTool.ai</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:#0f172a; color:#e2e8f0; min-height:100vh; }
+.container { max-width:800px; margin:0 auto; padding:40px 20px; }
+h1 { font-size:28px; margin-bottom:24px; }
+.back { color:#94a3b8; text-decoration:none; font-size:14px; display:inline-block; margin-bottom:20px; }
+.back:hover { color:#e2e8f0; }
+.tool-card { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:16px; margin-bottom:10px; display:flex; align-items:center; gap:12px; transition:border-color 0.2s; }
+.tool-card:hover { border-color:#3b82f6; }
+.tool-icon { width:32px; height:32px; border-radius:6px; }
+.tool-name { font-weight:600; font-size:15px; }
+.tool-name a { color:#e2e8f0; text-decoration:none; }
+.tool-name a:hover { color:#3b82f6; }
+.tool-cat { font-size:12px; color:#94a3b8; margin-top:2px; }
+.remove-btn { margin-left:auto; padding:6px 12px; border-radius:6px; border:1px solid #334155; background:transparent; color:#94a3b8; font-size:12px; cursor:pointer; }
+.remove-btn:hover { border-color:#ef4444; color:#ef4444; }
+.empty { text-align:center; padding:60px 20px; color:#94a3b8; }
+.empty p { font-size:16px; margin-bottom:12px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back">← Back to EveryTool.ai</a>
+    <h1>❤️ My Favorites</h1>
+    <div id="content">Loading...</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://ecqvyfsxaofboilnlkna.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjcXZ5ZnN4YW9mYm9pbG5sa25hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzODkxMzIsImV4cCI6MjA4Nzk2NTEzMn0.l0fd6T6z6rfZw_p1H6vsehEDCYCBBFfHCAOLobKJZVE';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function init() {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) {
+        document.getElementById('content').innerHTML = '<div class="empty"><p>You need to be logged in to see your favorites.</p><a href="index.html" style="color:#3b82f6;">Go to Homepage</a></div>';
+        return;
+    }
+
+    const { data: favs } = await sb.from('favorites').select('tool_id, tools(id, name, url, slug, categories(name, emoji))').eq('user_id', user.id);
+    
+    if (!favs || favs.length === 0) {
+        document.getElementById('content').innerHTML = '<div class="empty"><p>No favorites yet!</p><p style="font-size:13px;">Click the ♡ on any tool to add it to your favorites.</p><a href="index.html" style="color:#3b82f6;">Browse Tools</a></div>';
+        return;
+    }
+
+    let html = '';
+    for (const fav of favs) {
+        const t = fav.tools;
+        if (!t) continue;
+        const cat = t.categories ? `${t.categories.emoji} ${t.categories.name}` : '';
+        const domain = new URL(t.url).hostname;
+        html += `
+        <div class="tool-card" id="fav-${fav.tool_id}">
+            <img class="tool-icon" src="https://www.google.com/s2/favicons?domain=${domain}&sz=64" alt="">
+            <div>
+                <div class="tool-name"><a href="${t.url}" target="_blank">${t.name}</a></div>
+                <div class="tool-cat">${cat}</div>
+            </div>
+            <button class="remove-btn" onclick="removeFav('${fav.tool_id}', '${user.id}')">Remove</button>
+        </div>`;
+    }
+    document.getElementById('content').innerHTML = html;
+}
+
+async function removeFav(toolId, userId) {
+    await sb.from('favorites').delete().eq('tool_id', toolId).eq('user_id', userId);
+    const el = document.getElementById('fav-' + toolId);
+    if (el) el.remove();
+    if (!document.querySelector('.tool-card')) {
+        document.getElementById('content').innerHTML = '<div class="empty"><p>No favorites yet!</p><a href="index.html" style="color:#3b82f6;">Browse Tools</a></div>';
+    }
+}
+
+init();
+</script>
+</body>
+</html>

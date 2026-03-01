@@ -41,6 +41,10 @@ a:hover { text-decoration: underline; }
 .nav-btns a:hover, .nav-btns button:hover { background: var(--bg); text-decoration: none; }
 .header-link { color: var(--text-muted); font-size: 13px; font-weight: 500; text-decoration: none; padding: 6px 8px; border-radius: 6px; background: transparent; transition: color 0.2s; }
 .header-link:hover { color: var(--text); text-decoration: none; }
+.profile-menu { display:none; position:absolute; top:100%; right:0; margin-top:6px; min-width:180px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.3); z-index:1000; padding:6px 0; }
+.profile-menu.show { display:block; }
+.profile-menu a { display:block; padding:8px 14px; color:var(--text); text-decoration:none; font-size:13px; transition:background 0.15s; }
+.profile-menu a:hover { background:var(--bg); }
 .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 0 20px 20px; max-width: 1400px; margin: 0 auto; }
 .category-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; }
 .category-header { font-weight: 700; text-transform: uppercase; font-size: 14px; margin-bottom: 4px; color: var(--text); display: flex; align-items: center; gap: 6px; }
@@ -177,6 +181,7 @@ a:hover { text-decoration: underline; }
     <div class="modal">
         <h3 id="authTitle">Log In</h3>
         <div id="authMsg"></div>
+        <input type="text" id="authName" placeholder="Name" style="display:none;">
         <input type="email" id="authEmail" placeholder="Email">
         <input type="password" id="authPass" placeholder="Password">
         <button onclick="doAuth()" id="authBtn">Log In</button>
@@ -201,12 +206,32 @@ async function checkAuth() {
     updateAuthUI();
 }
 
-function updateAuthUI() {
+async function updateAuthUI() {
     const area = document.getElementById('authArea');
     if (currentUser) {
-        area.innerHTML = `<span style="font-size:13px;color:var(--text-muted)">${currentUser.email}</span> <button onclick="logout()">Log Out</button>`;
+        let displayName = currentUser.email;
+        const { data: profile } = await sb.from('profiles').select('display_name').eq('id', currentUser.id).maybeSingle();
+        if (profile && profile.display_name) displayName = profile.display_name;
+        area.innerHTML = `
+            <div class="profile-dropdown" style="position:relative;">
+                <button onclick="document.getElementById('profileMenu').classList.toggle('show')" 
+                    style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid var(--card-border);background:var(--card-bg);color:var(--text);font-size:13px;cursor:pointer;">
+                    <span style="width:26px;height:26px;border-radius:50%;background:var(--accent-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">${displayName.charAt(0).toUpperCase()}</span>
+                    ${displayName}
+                    <span style="font-size:10px;opacity:0.6;">▼</span>
+                </button>
+                <div id="profileMenu" class="profile-menu">
+                    <a href="profile.html">👤 My Profile</a>
+                    <a href="favorites.html">❤️ My Favorites</a>
+                    <a href="admin.html">⚙️ Admin Panel</a>
+                    <hr style="border:none;border-top:1px solid var(--card-border);margin:4px 0;">
+                    <a href="#" onclick="event.preventDefault();logout();">🚪 Log Out</a>
+                </div>
+            </div>`;
     } else {
-        area.innerHTML = `<button onclick="showAuthModal('login')">Log In</button><button class="primary" onclick="showAuthModal('signup')">Sign Up</button>`;
+        area.innerHTML = `
+            <button onclick="showAuthModal('login')" style="padding:6px 14px;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--text);font-size:13px;cursor:pointer;">Log In</button>
+            <button onclick="showAuthModal('signup')" style="padding:6px 14px;border-radius:6px;border:none;background:var(--accent-blue);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">Sign Up</button>`;
     }
 }
 
@@ -216,6 +241,7 @@ function showAuthModal(mode) {
     document.getElementById('authTitle').textContent = mode === 'login' ? 'Log In' : 'Sign Up';
     document.getElementById('authBtn').textContent = mode === 'login' ? 'Log In' : 'Sign Up';
     document.getElementById('authSwitch').textContent = mode === 'login' ? "Don't have an account? Sign up" : 'Already have an account? Log in';
+    document.getElementById('authName').style.display = mode === 'signup' ? 'block' : 'none';
     document.getElementById('authMsg').innerHTML = '';
 }
 
@@ -226,16 +252,24 @@ document.getElementById('authModal').addEventListener('click', e => { if (e.targ
 async function doAuth() {
     const email = document.getElementById('authEmail').value;
     const pass = document.getElementById('authPass').value;
+    const name = document.getElementById('authName').value;
     const msgEl = document.getElementById('authMsg');
     if (!email || !pass) { msgEl.innerHTML = '<div class="msg error">Please fill in all fields</div>'; return; }
+    if (authMode === 'signup' && !name) { msgEl.innerHTML = '<div class="msg error">Please enter your name</div>'; return; }
     let result;
     if (authMode === 'login') {
         result = await sb.auth.signInWithPassword({ email, password: pass });
     } else {
-        result = await sb.auth.signUp({ email, password: pass });
+        result = await sb.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
     }
     if (result.error) { msgEl.innerHTML = `<div class="msg error">${result.error.message}</div>`; return; }
-    if (authMode === 'signup') { msgEl.innerHTML = '<div class="msg success">Check your email to confirm!</div>'; return; }
+    if (authMode === 'signup') {
+        // Update profile with name
+        if (result.data.user) {
+            await sb.from('profiles').upsert({ id: result.data.user.id, display_name: name });
+        }
+        msgEl.innerHTML = '<div class="msg success">Account created! Check your email to confirm.</div>'; return;
+    }
     currentUser = result.data.user;
     updateAuthUI();
     document.getElementById('authModal').classList.remove('active');
@@ -375,6 +409,7 @@ function toggleTheme() {
 
 checkAuth();
 loadTools();
+document.addEventListener('click', e => { const m = document.getElementById('profileMenu'); if (m && !e.target.closest('.profile-dropdown')) m.classList.remove('show'); });
 </script>
 </body>
 </html>
